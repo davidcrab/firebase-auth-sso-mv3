@@ -1,6 +1,13 @@
 {
   "action": {
-    "default_popup": "./src/popup/public/index.html"
+    "default_popup": "./src/popup/public/index.html",
+    "default_icon": "rocketIcon2.png",
+    "icons": {
+      "16": "rocketIcon2.png",
+      "32": "rocketIcon2.png",
+      "48": "rocketIcon2.png",
+      "128": "rocketIcon2.png"
+    }
   },
   "permissions": [ "identity",
   "tabs",
@@ -9,11 +16,17 @@
     "https://us-central1-siip-e2ada.cloudfunctions.net/app/*",
     "https://www.hitpromo.net/"
   ],
-  "description": "Firebase Auth SSO MV3 demo",
+  "description": "Chrome extension for creating product decks that sell",
   "manifest_version": 3,
-  "name": "Firebase Auth SSO MV3",
-  "short_name": "Firebase Auth SSO MV3",
-  "version": "0.1",
+  "name": "Sip Sales Extension",
+  "short_name": "Sip",
+  "version": "0.0.0.1",
+  "icons": {
+    "16": "rocketIcon2.png",
+    "32": "rocketIcon2.png",
+    "48": "rocketIcon2.png",
+    "128": "rocketIcon2.png"
+  },
   "web_accessible_resources": [
   ],
   "content_security_policy": {
