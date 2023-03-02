@@ -30,17 +30,16 @@ module.exports = (env, options) => ({
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'src',
+          from: "src/**/*",
           globOptions: {
-            ignore: ['**/*.js', '**/*.scss', '**/*.html'],
-          },
+            ignore: ["**/*.js", "**/*.scss", "**/*.html"]
+          }
         },
         {
-          from: 'src/contentScript.js',
-          to: 'contentScript.js',
-        },
-      ],
-    })       
+          from: "src/contentScript.js",
+        }
+      ]
+    })         
   ],
   devtool: 'cheap-module-source-map'
 })
