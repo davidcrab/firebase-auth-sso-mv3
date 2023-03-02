@@ -2,7 +2,7 @@
   "name": "firebase-auth-sso-mv3-popup",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
     "maybe-install": "test -d node_modules || npm install",
     "start": "npm run maybe-install; webpack --mode development",

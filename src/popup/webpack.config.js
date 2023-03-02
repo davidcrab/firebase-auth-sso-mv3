@@ -30,12 +30,6 @@ module.exports = (env, options) => ({
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: "src/**/*",
-          globOptions: {
-            ignore: ["**/*.js", "**/*.scss", "**/*.html"]
-          }
-        },
-        {
           from: "src/contentScript.js",
         }
       ]
