@@ -1,3 +1,4 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin')
     , path = require('path')
 
@@ -25,6 +26,21 @@ module.exports = (env, options) => ({
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
-    })
-  ]
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "src",
+          globOptions: {
+            ignore: ["**/*.js", "**/*.scss", "**/*.html"]
+          }
+        },
+        {
+          from: "src/contentScript.js",
+          to: "contentScript.js"
+        }
+      ]
+    })    
+  ],
+  devtool: 'cheap-module-source-map'
 })

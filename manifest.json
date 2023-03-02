@@ -2,20 +2,42 @@
   "action": {
     "default_popup": "./src/popup/public/index.html"
   },
-  "permissions": [ "identity" ],
+  "permissions": [ "identity",
+  "tabs",
+  "activeTab" ],
+  "host_permissions": [
+    "https://us-central1-siip-e2ada.cloudfunctions.net/app/*",
+    "https://www.hitpromo.net/"
+  ],
   "description": "Firebase Auth SSO MV3 demo",
   "manifest_version": 3,
   "name": "Firebase Auth SSO MV3",
   "short_name": "Firebase Auth SSO MV3",
   "version": "0.1",
-  "web_accessible_resources": [],
+  "web_accessible_resources": [
+    {
+      "resources": ["contentScript.js"],
+      "matches": ["https://www.hitpromo.net/product/*"]
+    }
+  ],  
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' 'unsafe-inline';"
   },
   "oauth2": {
-    "client_id": "<some-id>.apps.googleusercontent.com",
+    "client_id": "705663877367-k5v5asttldvhm4qa4ifru0ovpvtmdb03.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"
     ]
+  },
+  "content_scripts": [
+    {
+      "js": ["contentScript.js"],
+      "matches": [
+        "https://www.hitpromo.net/product/*"
+      ]
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["https://www.hitpromo.net/*"]
   }
 }

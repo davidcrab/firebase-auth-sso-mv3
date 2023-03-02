@@ -1,10 +1,9 @@
 export const FIREBASE_CONFIG = {
-  apiKey: "AIzaThisHasBeenMlRandomizedJMErMve1QtE",
-  authDomain: "<some-id>.firebaseapp.com",
-  databaseURL: "https://<some-id>.firebaseio.com",
-  projectId: "<some-id>",
-  storageBucket: "<some-id>.appspot.com",
-  messagingSenderId: "376725366650",
-  appId: "1:376725366650:web:some-id",
-  measurementId: "G-5C100CL40M"
-}
+  apiKey: "AIzaSyCUrgmyBtJYrpaE7iRH3XA4IBpmwG8-4sg",
+  authDomain: "siip-e2ada.firebaseapp.com",
+  projectId: "siip-e2ada",
+  storageBucket: "siip-e2ada.appspot.com",
+  messagingSenderId: "705663877367",
+  appId: "1:705663877367:web:530d0393a123b64a1753f2",
+  measurementId: "G-9JL65QD3P9"
+};
