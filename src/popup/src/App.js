@@ -214,6 +214,9 @@ export const App = (props) =>
         let parsedResult = JSON.parse(result);
         console.log(parsedResult);
         const deckSelect = document.getElementById('demoDeckSelect');
+
+        // set the first deck as the default
+        setDemoDeck(parsedResult[0].id)
   
         for (const deck of parsedResult) {
           const optionElement = document.createElement('option');

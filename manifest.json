@@ -42,7 +42,8 @@
     {
       "js": ["./src/popup/public/contentScript.js"],
       "matches": [
-        "https://www.hitpromo.net/product/*"
+        "https://www.hitpromo.net/product/*",
+        "https://hitpromo.net/product/*"
       ]
     }
   ],

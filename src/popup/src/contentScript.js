@@ -9,6 +9,10 @@ function getProductData() {
   var productName = document.querySelector('.mb-4').textContent;
   var productImage = "https://www.hitpromo.net" + productImage;
 
+  // Download the image and convert it to a Blob
+  // const imageResponse = await fetch(productImage);
+  // const imageBlob = await imageResponse.blob();
+
   var deckId = deck;
   var descriptions = getProductDescription()
   var notes = getProductNotes()
@@ -25,53 +29,6 @@ function getProductData() {
     "productDescription": descriptions,
     "productNotes": notes
   }
-}
-
-async function postDataTest(deckId, productName, productImage, descriptions, notes, productId) {
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify({
-    "deckId": deckId,
-    "productId": productId,
-    "productName": productName,
-    "productImage": productImage,
-    "productDescription": descriptions,
-    "productNotes": notes
-  });
-
-  console.log(raw)
-
-  chrome.runtime.sendMessage({ type: "PRODUCT_DATA", data: raw }, function(response) {
-    console.log(response);
-  });
-}
-
-async function postData(deckId, productName, productImage, descriptions, notes, productId) {
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify({
-    "deckId": deckId,
-    "productId": productId,
-    "productName": productName,
-    "productImage": productImage,
-    "productDescription": descriptions,
-    "productNotes": notes
-  });
-
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    mode: 'cors', // Add this option
-    redirect: 'follow'
-  };
-
-  const resp = await fetch("https://us-central1-siip-e2ada.cloudfunctions.net/app/updateDeck", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
 }
 
 // updated this so the description is not an array. just a string seperated by -
