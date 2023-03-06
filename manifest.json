@@ -1,12 +1,12 @@
 {
   "action": {
     "default_popup": "./src/popup/public/index.html",
-    "default_icon": "rocketIcon2.png",
+    "default_icon": "logo3.png",
     "icons": {
-      "16": "rocketIcon2.png",
-      "32": "rocketIcon2.png",
-      "48": "rocketIcon2.png",
-      "128": "rocketIcon2.png"
+      "16": "logo3.png",
+      "32": "logo3.png",
+      "48": "logo3.png",
+      "128": "logo3.png"
     }
   },
   "permissions": [ "identity",
@@ -22,10 +22,10 @@
   "short_name": "Sip",
   "version": "0.0.0.1",
   "icons": {
-    "16": "rocketIcon2.png",
-    "32": "rocketIcon2.png",
-    "48": "rocketIcon2.png",
-    "128": "rocketIcon2.png"
+      "16": "logo3.png",
+      "32": "logo3.png",
+      "48": "logo3.png",
+      "128": "logo3.png"
   },
   "web_accessible_resources": [
   ],

@@ -4,8 +4,14 @@ console.log(element.textContent);
 var deck = ""
 
 async function getProductData() {
-  var element = document.querySelector('.popupTrigger');
-  var productImage = element ? element.getAttribute('src') : '';
+  // get the active image in the carousel: class="primary-carousel carousel-item active"
+  // get the image src: class="popupTrigger"
+  var element = document.querySelector('.primary-carousel.carousel-item.active');
+  var popupTrigger = element ? element.querySelector('.popupTrigger') : '';
+  var productImage = popupTrigger ? popupTrigger.getAttribute('src') : '';
+  // var element = document.querySelector('.popupTrigger');
+  // var productImage = element ? element.getAttribute('src') : '';
+  console.log("productImage: " + productImage);
   var productName = document.querySelector('.mb-4').textContent;
   var productImage = "https://www.hitpromo.net" + productImage;
 
@@ -88,18 +94,12 @@ function getProductNotes() {
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(message) {
     if (message.type === "getData") {
-      console.log("getData message received");
-      // Do asynchronous work to get data
-
-      var responseData = getProductData();
-
       getProductData().then(function(data) {
         console.log("Prepared data:", data)
         console.log("Sending data back to popup", data);
         port.postMessage({data: data});
       });
-      
-      // When data is retrieved, send it back to Popup.js
+
     }
   });
 });

@@ -144,20 +144,17 @@ export const App = (props) =>
 
   const addProduct = e =>
   {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { action: 'get-data' }, function(response) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      var port = chrome.tabs.connect(tabs[0].id);
+      port.postMessage({type: "getData"});
+      port.onMessage.addListener(function(response) {
+        console.log("Response", response);
+        console.log("Response data", response.data);
         let postParams = response.data
-        if (postParams.deckId == "") {
-          console.log("Deck id not set, using selected deck id: " + deckId)
-          postParams.deckId = deckId
-        }
-        console.log("Post deck id: " + postParams.deckId)
-        // TODO: update button to show loading
-        postData(postParams.deckId, postParams.productName, postParams.productImage, postParams.productDescription, postParams.productNotes, postParams.productId)
-          .then(() => {
-            console.log("Product added to deck")
-          }
-        );
+        postData(deckId, postParams.productName, postParams.productImage, postParams.productDescription, postParams.productNotes, postParams.productId)
+        .then(() => {
+          console.log("Product added to deck")
+        })
       });
     });
   }
