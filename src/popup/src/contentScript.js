@@ -30,6 +30,7 @@ async function getProductData() {
       var descriptions = getProductDescription()
       var notes = getProductNotes()
       var pricing = getPricing()
+      var pricingTable = getPricingTable()
 
       notes = pricing.concat(notes)
 
@@ -41,7 +42,8 @@ async function getProductData() {
         "productName": productName,
         "productImage": base64Image,
         "productDescription": descriptions,
-        "productNotes": notes
+        "productNotes": notes,
+        "pricingTable": pricingTable
       });
     };
   });
@@ -78,6 +80,17 @@ function getPricing() {
   pricingArray.push(("Pricing: " + pricing));
   
   return pricingArray;
+}
+
+function getPricingTable() {
+  /* Get the entire html table for pricing
+  <table id="pricingTable" class="table table-pricing">
+  */
+
+  var element = document.querySelector('#pricingTable');
+  var pricingTable = element.outerHTML;
+  console.log("Pricing Table", pricingTable)
+  return pricingTable;
 }
 
 function getProductNotes() {

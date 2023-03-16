@@ -62,7 +62,7 @@ export const App = (props) =>
     // run this code when the value of user changes and is not undefined
   }, [user]);
   
-  async function postData(deckId, productName, productImage, descriptions, notes, productId) {
+  async function postData(deckId, productName, productImage, descriptions, notes, productId, pricingTable) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
   
@@ -72,7 +72,8 @@ export const App = (props) =>
       "productName": productName,
       "productImage": productImage,
       "productDescription": descriptions,
-      "productNotes": notes
+      "productNotes": notes,
+      "pricingTable": pricingTable
     });
   
     var requestOptions = {
@@ -151,7 +152,7 @@ export const App = (props) =>
         console.log("Response", response);
         console.log("Response data", response.data);
         let postParams = response.data
-        postData(deckId, postParams.productName, postParams.productImage, postParams.productDescription, postParams.productNotes, postParams.productId)
+        postData(deckId, postParams.productName, postParams.productImage, postParams.productDescription, postParams.productNotes, postParams.productId, postParams.pricingTable)
         .then(() => {
           console.log("Product added to deck")
         })
@@ -238,7 +239,7 @@ export const App = (props) =>
         console.log("Response", response);
         console.log("Response data", response.data);
         let postParams = response.data
-        postData(demoDeckId, postParams.productName, postParams.productImage, postParams.productDescription, postParams.productNotes, postParams.productId)
+        postData(demoDeckId, postParams.productName, postParams.productImage, postParams.productDescription, postParams.productNotes, postParams.productId, postParams.pricingTable)
         .then(() => {
           console.log("Product added to deck")
         })
@@ -297,7 +298,7 @@ export const App = (props) =>
         <Divider />
         <Box w="full">
           <HStack>
-            <Link href="https://hitpromo.net" isExternal>Hit Promo</Link>
+            <Link href="https://www.hitpromo.net" isExternal>Hit Promo</Link>
             <Spacer />
             <Button size={"sm"} onClick={auth.signOut.bind(auth)}>Sign Out?</Button>
           </HStack>
@@ -309,7 +310,7 @@ export const App = (props) =>
 
   return (
     <VStack m="5">
-      <Heading>Demo Sales Deck Editor</Heading>
+      <Heading>Demo Sales Deck Editor - Test Change</Heading>
       <Text>Create a Deck. Go to Hit Promo and search products. To add a product to the deck, go to the product's detail page and click this extension.</Text>
       <FormControl>
         <Input id="demoDeckName" type="text" placeholder="Deck Name" />
