@@ -168,6 +168,90 @@ function getPCNAProductImage() {
   return productImage;
 }
 
+/*********************************************************
+ * VENDOR: PRIMELINE
+ * 
+ * 
+********************************************************/
+async function getPrimelineProductData() {
+
+  /*
+  productId: class="sku"
+  */
+  var element = document.querySelector('.sku');
+  var productId = element ? element.textContent : '';
+  // remove new line characters and anything but characters and numbers
+  productId = productId.replace(/(\r \t \n)/gm, "");
+  productId = productId.replace(/[^a-zA-Z0-9]/g, "");
+  console.log("SIP: ", productId)
+  var productImage = getPrimelineProductImage();
+
+  // Download the image and convert it to a Blob
+  const imageResponse = await fetch(productImage);
+  const imageBlob = await imageResponse.blob();
+  const reader = new FileReader();
+  reader.readAsDataURL(imageBlob);
+
+  // Return a promise that resolves with the product information
+  return new Promise((resolve, reject) => {
+    reader.onloadend = () => {
+      const base64Image = reader.result;
+
+      resolve({
+        "productId": productId,
+        "productName": getPrimelineProductName(),
+        "productDescription": getPrimelineProductDescription(),
+        "productImage": base64Image,
+        "productNotes": getPrimelineProductNotes(),
+        "pricingTable": getPrimelineProductPricingTable(),
+      });
+    };
+  });
+}
+
+function getPrimelineProductName() {
+  /*
+  class="product-name"
+  */
+  var element = document.querySelector('.product-name');
+  var productName = element ? element.textContent : '';
+  console.log("SIP: ", productName)
+  return productName;
+}
+
+function getPrimelineProductDescription() {
+  /*
+  class="std"
+  */
+  var element = document.querySelector('.std');
+  var productDescription = element ? element.textContent : '';
+  console.log("SIP: ", productDescription)
+  // temp hack change every "." to a "-" to make it easier to parse
+  productDescription = productDescription.replace(/\./g, "-");
+  // delete the last "-" from the string
+  productDescription = productDescription.substring(0, productDescription.length - 1);
+
+  return productDescription;
+}
+
+function getPrimelineProductImage() {
+  /*
+  class="gallery-image visible"
+  */
+  var element = document.querySelector('.gallery-image.visible');
+  var productImage = element ? element.getAttribute('src') : '';
+  console.log("SIP: ", productImage)
+  return productImage;
+}
+
+function getPrimelineProductNotes() {
+  return [""]
+}
+
+function getPrimelineProductPricingTable() {
+  return ""
+}
+
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(message) {
     /* 
@@ -190,7 +274,15 @@ chrome.runtime.onConnect.addListener(function(port) {
         console.log("Sending data back to popup", productData);
         port.postMessage({data: productData});
 
-      } else {
+      } else if (url.includes("https://www.primeline.com/")) {
+
+        getPrimelineProductData().then(function(data) {
+          console.log("Prepared data:", data)
+          console.log("Sending data back to popup", data);
+          port.postMessage({data: data});
+        });
+      }
+      else {
         getProductData().then(function(data) {
           console.log("Prepared data:", data)
           console.log("Sending data back to popup", data);

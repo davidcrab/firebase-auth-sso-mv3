@@ -4,7 +4,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithCredential, GoogleAuthProvider } from 'firebase/auth'
 import { FIREBASE_CONFIG } from './const'
 import { Button, Heading, Input, VStack, Select, Divider, FormControl, Box,
-Tabs, TabList, Tab, TabPanel, TabPanels, Text, HStack, Link, Spacer } from '@chakra-ui/react'
+Tabs, TabList, Tab, TabPanel, TabPanels, Text, HStack, Link, Spacer, Spinner } from '@chakra-ui/react'
 
 export const firebase = initializeApp(FIREBASE_CONFIG)
 export const auth = getAuth(firebase)
@@ -190,6 +190,15 @@ export const App = (props) =>
 
   const QueryDemoDecks = async () => {
 
+    /*
+    Add loading indicator
+    use <Spinner />
+    */
+    let loadingIndicator = document.createElement('div');
+    loadingIndicator.classList.add('loading-indicator');
+    loadingIndicator.innerHTML = 'Loading...';
+    document.body.appendChild(loadingIndicator);
+
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -227,6 +236,8 @@ export const App = (props) =>
       .catch(error => console.log('error', error));
   
       // remove loading indicator from dom  
+      loadingIndicator.remove();
+
     return resp; // return the response from the fetch call
   };
 
