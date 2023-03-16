@@ -1,6 +1,6 @@
 console.log("Content script running");
-var element = document.querySelector(".mb-4"); 
-console.log(element.textContent);
+// var element = document.querySelector(".mb-4"); 
+// console.log(element.textContent);
 var deck = ""
 
 async function getProductData() {
@@ -104,14 +104,99 @@ function getProductNotes() {
   return notes;
 }
 
+/*********************************************************
+  VENDOR: PCNA
+********************************************************/
+function getPCNAProductData() {
+  /*
+  productId: id="pdp-sku"
+  */
+  var element = document.querySelector('#pdp-sku');
+  var productId = element ? element.textContent : '';
+  console.log("SIP: ", productId)
+
+  let productData = {
+    "productId": productId,
+    "productName": getPCNAProductName(),
+    "productDescription": getPCNAProductDescription(),
+    "productImage": getPCNAProductImage(),
+    "productNotes": getPCNAProductNotes(),
+    "pricingTable": getPCNAProductPricingTable(),
+  }
+  return productData;
+}
+
+function getPCNAProductNotes() {
+  return [""]
+}
+
+function getPCNAProductPricingTable() {
+  return ""
+}
+
+function getPCNAProductName() {
+  /*
+  bold-24 spacer-xs text-gray1 product-name
+  */
+  var element = document.querySelector('.bold-24.spacer-xs.text-gray1.product-name');
+  var productName = element ? element.textContent : '';
+  console.log("SIP: ", productName)
+  return productName;
+}
+
+function getPCNAProductDescription() {
+  /*
+  id="overview-tab-description"
+  */
+  var element = document.querySelector('#overview-tab-description');
+  var productDescription = element ? element.textContent : '';
+  console.log("SIP: ", productDescription)
+  // temp hack change every "." to a "-" to make it easier to parse
+  productDescription = productDescription.replace(/\./g, "-");
+  // delete the last "-" from the string
+  productDescription = productDescription.substring(0, productDescription.length - 1);
+  return productDescription;
+}
+
+function getPCNAProductImage() {
+  /*
+  id="main-pdp-img"
+  */
+  var element = document.querySelector('#main-pdp-img');
+  var productImage = element ? element.getAttribute('src') : '';
+  console.log("SIP: ", productImage)
+  return productImage;
+}
+
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(message) {
+    /* 
+      if the message type is getData and the tab url is https://www.pcna.com/en-us/product/* then 
+    */
+
+    /* 
+      if the message type is getData and default tab url
+    */
     if (message.type === "getData") {
-      getProductData().then(function(data) {
-        console.log("Prepared data:", data)
-        console.log("Sending data back to popup", data);
-        port.postMessage({data: data});
-      });
+
+      // get the current url
+      var url = window.location.href;
+      
+      // if https://www.pcna.com/en-us/product/ is in the url then get the product data
+      if (url.includes("https://www.pcna.com/en-us/product/")) {
+        console.log("Different process")
+        var productData = getPCNAProductData();
+        console.log("Prepared data:", productData)
+        console.log("Sending data back to popup", productData);
+        port.postMessage({data: productData});
+
+      } else {
+        getProductData().then(function(data) {
+          console.log("Prepared data:", data)
+          console.log("Sending data back to popup", data);
+          port.postMessage({data: data});
+        });
+      }
 
     }
   });
