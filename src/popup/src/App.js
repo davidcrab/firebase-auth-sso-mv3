@@ -4,7 +4,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithCredential, GoogleAuthProvider } from 'firebase/auth'
 import { FIREBASE_CONFIG } from './const'
 import { Button, Heading, Input, VStack, Select, Divider, FormControl, Box,
-Tabs, TabList, Tab, TabPanel, TabPanels, Text, HStack, Link, Spacer, Spinner } from '@chakra-ui/react'
+Tabs, TabList, Tab, TabPanel, TabPanels, Text, HStack, Link, Spacer, Spinner, useToast } from '@chakra-ui/react'
 
 export const firebase = initializeApp(FIREBASE_CONFIG)
 export const auth = getAuth(firebase)
@@ -14,6 +14,7 @@ export const App = (props) =>
   const [user, setUser] = React.useState(undefined)
   const [deckId, setDeck] = React.useState(undefined)
   const [demoDeckId, setDemoDeck] = React.useState(undefined)
+  const toast = useToast()
 
   const QueryDecks = async () => {
 
@@ -86,8 +87,24 @@ export const App = (props) =>
     // TODO: Update button to show success or failure
     const resp = await fetch("https://us-central1-siip-e2ada.cloudfunctions.net/app/updateDeck", requestOptions)
       .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+      .then(result => {
+        toast({
+          title: 'Product added to deck!',
+          status: 'success',
+          duration: 6000,
+          isClosable: true,
+        })
+        console.log(result)
+      })
+      .catch(error => {
+        toast({
+          title: 'Product not added to deck.',
+          status: 'error',
+          duration: 6000,
+          isClosable: true,
+        })
+        console.log('error', error)
+      });
   
     return true;
   }

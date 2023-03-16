@@ -252,6 +252,100 @@ function getPrimelineProductPricingTable() {
   return ""
 }
 
+/*********************************************************
+ * VENDOR: HIGHCAlIBER
+ *
+ *  
+********************************************************/
+async function getHighCaliberProductData() {
+  /*
+  productId: class="item-title"
+  */
+  var element = document.querySelector('.item-title');
+  var productId = element ? element.textContent : '';
+  productId = productId.replace(/(\r \t \n)/gm, "");
+  productId = productId.replace(/[^a-zA-Z0-9]/g, "");
+  console.log("SIP: ", productId)
+  var productImage = getHighCaliberProductImage();
+
+  // Download the image and convert it to a Blob
+  const imageResponse = await fetch(productImage);
+  const imageBlob = await imageResponse.blob();
+  const reader = new FileReader();
+  reader.readAsDataURL(imageBlob);
+
+  // Return a promise that resolves with the product information
+  return new Promise((resolve, reject) => {
+    reader.onloadend = () => {
+      const base64Image = reader.result;
+
+      resolve({
+        "productId": productId,
+        "productName": getHighCaliberProductName(),
+        "productDescription": getHighCaliberProductDescription(),
+        "productImage": base64Image,
+        "productNotes": getHighCaliberProductNotes(),
+        "pricingTable": getHighCaliberProductPricingTable(),
+      });
+    };
+  });
+}
+
+function getHighCaliberProductName() {
+  /*
+  class="product-name product-title"
+  */
+  var element = document.querySelector('.product-name.product-title');
+  /* class itemprop="name" */
+  var nameElement = element.querySelector('[itemprop="name"]');
+  var productName = nameElement ? nameElement.textContent : '';
+
+  console.log("SIP: ", productName)
+  return productName;
+}
+
+function getHighCaliberProductDescription() {
+  /*
+  class="std"
+  */
+  var element = document.querySelector('.std');
+  var productDescription = element ? element.textContent : '';
+  console.log("SIP: ", productDescription)
+  // temp hack change every "." to a "-" to make it easier to parse
+  productDescription = productDescription.replace(/\./g, "-");
+  // delete the last "-" from the string
+  productDescription = productDescription.substring(0, productDescription.length - 1);
+
+  return productDescription;
+}
+
+function getHighCaliberProductImage() {
+  /* 
+  <li id="slide" class="WEDO_SLIDE lslide active" style="height: 450px; margin-bottom: 0px;" data-thumb="https://highcaliberline.com/media/catalog/product/cache/1/image/100x100/9df78eab33525d08d6e5fb8d27136e95/t/-/t-132-blue-window-break.jpg" data-label="42637">
+                    <a data-fancybox="product_images" id="image_42637" href="https://highcaliberline.com/media/catalog/product/cache/1/image/800x800/9df78eab33525d08d6e5fb8d27136e95/t/-/t-132-blue-window-break.jpg" title="" class="videothumb fancybox cloud-zoom-gallery productimages" rel="useZoom:'zoomID',smallImage:'https://highcaliberline.com/media/catalog/product/cache/1/image/800x800/9df78eab33525d08d6e5fb8d27136e95/t/-/t-132-blue-front-blank.jpg'" onclick="javascript:product_color(this);setSelectedImageId('42637','1.008');return false;">
+                        <img class="img-responsive" height="500" width="" src="https://highcaliberline.com/media/catalog/product/cache/1/image/800x800/9df78eab33525d08d6e5fb8d27136e95/t/-/t-132-blue-window-break.jpg" alt="">
+                    </a>
+                </li>
+  class="WEDO_SLIDE lslide active"
+
+  */
+  var element = document.querySelector('.WEDO_SLIDE.lslide.active');
+  // get img tag
+  var img = element ? element.querySelector('img') : '';
+  var productImage = img ? img.getAttribute('src') : '';
+  console.log("SIP: ", productImage)
+  return productImage;
+}
+
+function getHighCaliberProductNotes() {
+  return [""]
+}
+
+function getHighCaliberProductPricingTable() {
+  return ""
+}
+
+
 chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(message) {
     /* 
@@ -270,21 +364,20 @@ chrome.runtime.onConnect.addListener(function(port) {
       if (url.includes("https://www.pcna.com/en-us/product/")) {
         console.log("Different process")
         var productData = getPCNAProductData();
-        console.log("Prepared data:", productData)
         console.log("Sending data back to popup", productData);
         port.postMessage({data: productData});
-
       } else if (url.includes("https://www.primeline.com/")) {
-
         getPrimelineProductData().then(function(data) {
-          console.log("Prepared data:", data)
           console.log("Sending data back to popup", data);
           port.postMessage({data: data});
         });
-      }
-      else {
+      } else if (url.includes("https://highcaliberline.com/")) {
+        getHighCaliberProductData().then(function(data) {
+          console.log("Sending data back to popup", data);
+          port.postMessage({data: data});
+        });
+      } else {
         getProductData().then(function(data) {
-          console.log("Prepared data:", data)
           console.log("Sending data back to popup", data);
           port.postMessage({data: data});
         });
