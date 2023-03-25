@@ -15,34 +15,8 @@ export const App = (props) =>
   const [deckId, setDeck] = React.useState(undefined)
   const [demoDeckId, setDemoDeck] = React.useState(undefined)
   const toast = useToast()
-
-  // chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  //   console.log("message recieved")
-  //   if (message.action === "openPopup") {
-  //   }
-  // });
-
-
-  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  //   var port = chrome.tabs.connect(tabs[0].id);
-  //   port.onMessage.addListener(function(msg) {
-
-  //     console.log("message recieved" + msg);
-  //     port.postMessage("Hi Popup.js");
-  //   });
-  // });
-  
-  // chrome.runtime.onMessage.addListener(
-  //   function(request, sender, sendResponse) {
-  //     console.log(sender.tab ?
-  //                 "from a content script:" + sender.tab.url :
-  //                 "from the extension");
-  //     if (request.greeting === "hello")
-  //       sendResponse({farewell: "goodbye"});
-            
-  //   }
-
-  // );
+  const [listenerAdded, setListenerAdded] = React.useState(false)
+  console.log("App Called")
 
   const QueryDecks = async () => {
 
@@ -338,10 +312,10 @@ export const App = (props) =>
   // Get the currently active tab
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       console.log("calling script")
-      chrome.scripting.insertCSS({
-        target: {tabId: tabs[0].id},
-        files: ['src/popup/src/custom-cursor.css']
-      });      
+      // chrome.scripting.insertCSS({
+      //   target: {tabId: tabs[0].id},
+      //   files: ['src/popup/src/custom-cursor.css']
+      // });      
       // Inject the content script into the active tab
       chrome.scripting.executeScript({
         target: {tabId: tabs[0].id},
@@ -350,20 +324,66 @@ export const App = (props) =>
     });
   }
 
-  // chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  //   console.log("Message received", message)
-  //   return true;
-  // });
+  async function sendHTMLdata(html, url, deckId) {
+    /*
+      POST request to send html to server
+      endpoint: https://us-central1-siip-e2ada.cloudfunctions.net/app/parseHtml
+    */
+   console.log("deck id", deckId)
+    const resp = await fetch("https://us-central1-siip-e2ada.cloudfunctions.net/app/parseHtml", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({html: html, url: url, deckId: deckId})
+    })
+    .then(response => {
+      return response.text();
+    }
+    )
+    .then(result => {
+      console.log(result);
+    }
+    )
+    .catch(error => console.log('error', error));
+  }
 
+  /* 
+  because this is react, every time we re-render the page, it is adding a new listener
+  right now it is re-rending four times which is not okay. we can fix this by adding a
+  useEffect hook to only add the listener once
+  */
 
+  React.useEffect(() => {
+    // check user is defined so we don't add a second listener on re-render
+    if (user !== undefined) {
+      console.log("Adding listener")
+      console.log(deckId)
+      chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        console.log("Received message:", request);
+        if (request.action === "testPassData") {
+          console.log("Sending html")
+          sendHTMLdata(request.html, request.url, deckId)
+        }
+      });
+
+      // remove listener on unmount
+      return () => {
+        console.log("Removing listener")
+        chrome.runtime.onMessage.removeListener();
+      }
+    }
+    
+  }, [user, deckId])
 
 
   if ( undefined === user )
     return <Text>Loading...</Text>
+  
 
   console.log(user)
   if ( user != null) {
-
+    console.log("once")
     return (
       <VStack m="5">
         <Tabs align='center' isFitted>
@@ -401,7 +421,7 @@ export const App = (props) =>
       </VStack>
     )
   }
-
+  console.log("twice")
   return (
     <VStack m="5">
       <Heading>Demo Sales Deck Editor - Test Change</Heading>
