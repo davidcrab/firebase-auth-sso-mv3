@@ -16,6 +16,34 @@ export const App = (props) =>
   const [demoDeckId, setDemoDeck] = React.useState(undefined)
   const toast = useToast()
 
+  // chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  //   console.log("message recieved")
+  //   if (message.action === "openPopup") {
+  //   }
+  // });
+
+
+  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  //   var port = chrome.tabs.connect(tabs[0].id);
+  //   port.onMessage.addListener(function(msg) {
+
+  //     console.log("message recieved" + msg);
+  //     port.postMessage("Hi Popup.js");
+  //   });
+  // });
+  
+  // chrome.runtime.onMessage.addListener(
+  //   function(request, sender, sendResponse) {
+  //     console.log(sender.tab ?
+  //                 "from a content script:" + sender.tab.url :
+  //                 "from the extension");
+  //     if (request.greeting === "hello")
+  //       sendResponse({farewell: "goodbye"});
+            
+  //   }
+
+  // );
+
   const QueryDecks = async () => {
 
     var myHeaders = new Headers();
@@ -88,17 +116,29 @@ export const App = (props) =>
     const resp = await fetch("https://us-central1-siip-e2ada.cloudfunctions.net/app/updateDeck", requestOptions)
       .then(response => response.text())
       .then(result => {
+        console.log("Result", result)
+        /* see if it an error or not
+        */
+       if (result.includes("error")) {
+        toast({
+          title: 'Whoops! The produck was not added.',
+          status: 'error',
+          duration: 6000,
+          isClosable: true,
+        })
+      } else {
         toast({
           title: 'Product added to deck!',
           status: 'success',
           duration: 6000,
           isClosable: true,
         })
+      }
         console.log(result)
       })
       .catch(error => {
         toast({
-          title: 'Product not added to deck.',
+          title: 'Error! The produck was not added.',
           status: 'error',
           duration: 6000,
           isClosable: true,
@@ -291,6 +331,32 @@ export const App = (props) =>
       QueryDemoDecks();
     }
   }, [user]);
+  
+  // map product 
+  const mapProduct = () => {
+    console.log("Button clicked")
+  // Get the currently active tab
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      console.log("calling script")
+      chrome.scripting.insertCSS({
+        target: {tabId: tabs[0].id},
+        files: ['src/popup/src/custom-cursor.css']
+      });      
+      // Inject the content script into the active tab
+      chrome.scripting.executeScript({
+        target: {tabId: tabs[0].id},
+        files: ['src/popup/src/mapProductScript.js']
+      });
+    });
+  }
+
+  // chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  //   console.log("Message received", message)
+  //   return true;
+  // });
+
+
+
 
   if ( undefined === user )
     return <Text>Loading...</Text>
@@ -331,7 +397,7 @@ export const App = (props) =>
             <Button size={"sm"} onClick={auth.signOut.bind(auth)}>Sign Out?</Button>
           </HStack>
         </Box>
-
+        <Button onClick={mapProduct}>Map Product</Button>
       </VStack>
     )
   }

@@ -3,6 +3,19 @@ console.log("Content script running");
 // console.log(element.textContent);
 var deck = ""
 
+// content_script.js
+
+// document.addEventListener('click', function(event) {
+//   // Get the selected element
+//   var selectedElement = window.getSelection().anchorNode.parentElement;
+
+//   console.log("selectedElement: " + selectedElement.outerHTML);
+
+//   // Send the selected element to the background script
+//   chrome.runtime.sendMessage({element: selectedElement.outerHTML});
+// });
+
+
 async function getProductData() {
   // get the active image in the carousel: class="primary-carousel carousel-item active"
   // get the image src: class="popupTrigger"

@@ -10,7 +10,7 @@
     }
   },
   "permissions": [ "identity",
-  "tabs",
+  "scripting",
   "activeTab" ],
   "host_permissions": [
     "https://us-central1-siip-e2ada.cloudfunctions.net/app/*",
@@ -21,6 +21,7 @@
   "name": "Sip Sales Extension",
   "short_name": "Sip",
   "version": "0.0.0.1",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsw7kExOlRRK2FG7XCfNYHwbKczQK3JkHzaV/uNzOlvYrJROM68+yoeugi5S1KcjrkHRhG4j3npo3GYzgsgnN41UbVunrWGJRzNnfuZ+wB/J3vU0RgSFA3TBHWf+p9lTD/E+caxJ9LnfqsPYPddoVdzi/ck8EeFFun6rTqwWfFtAGSbLkLjJqD2PqLKlaKv5tTFTQ0ZI2WZDMA9RudGrYqX5Ronk6oUXlQxuvNmCMwGRaEtuo96u1zO/tXheSpMJCsvfpyeAnh9EVBgueLlARXEWuLWIAFBDCtJ41bSXMS9ZbwahdQ1JtxTdSxvNf7Rk1UE65IGI8jwlzF1ZySsaxZwIDAQAB",
   "icons": {
       "16": "logo3.png",
       "32": "logo3.png",
@@ -43,11 +44,17 @@
       "js": ["./src/popup/public/contentScript.js"],
       "matches": [
         "https://www.hitpromo.net/product/*",
-        "https://hitpromo.net/product/*"
+        "https://hitpromo.net/product/*",
+        "https://www.pcna.com/en-us/product/*",
+        "https://www.primeline.com/*",
+        "https://highcaliberline.com/*"
       ]
     }
   ],
   "externally_connectable": {
     "matches": ["https://www.hitpromo.net/*"]
+  },
+  "background": {
+    "service_worker": "./src/popup/public/background.js"
   }
 }

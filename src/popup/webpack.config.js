@@ -31,6 +31,7 @@ module.exports = (env, options) => ({
       patterns: [
         {
           from: "src/contentScript.js",
+          from: "src/background.js",
         }
       ]
     })         
